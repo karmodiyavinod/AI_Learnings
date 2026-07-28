@@ -1,6 +1,9 @@
 -- Install Python (required version)
 -- Install Package Manager
 
+-- upgrade pip 
+    python.exe -m pip install --upgrade pip
+
 1. Create Virtual Environemnt 
 
     python -m venv [path]
