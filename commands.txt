@@ -1,0 +1,60 @@
+-- Install Python (required version)
+-- Install Package Manager
+
+1. Create Virtual Environemnt 
+
+    python -m venv [path]
+
+    Example: python -m venv .venv
+
+2. Activate / Deactivate VENV
+
+    Activate: <venv>\Scripts\activate.bat
+        Example: .venv\scripts\activate
+
+    Deactivate: activate.bat
+        Example: Deactivate
+        
+3. Prepare Requirements.txt for for list of package we need
+    Create a text file: Requirements.txt
+
+    Example: 
+        numpy==1.26.4
+        requests==2.31.0
+    
+    # ----------------------------------------------------
+    # Core Frameworks (Latest available matching criteria)
+    # ----------------------------------------------------
+    flask
+    fastapi
+
+    # ----------------------------------------------------
+    # Strict Version Pinning (Perfect for production)
+    # ----------------------------------------------------
+    numpy==1.26.4
+    requests==2.31.0
+
+    # ----------------------------------------------------
+    # Minimum and Range Constraints
+    # ----------------------------------------------------
+    pandas>=2.0.0
+    sqlalchemy>=2.0,<3.0
+
+    # ----------------------------------------------------
+    # Compatible Release Specifiers (~=)
+    # Matches minor releases, e.g., >= 2.2.0, < 2.3.0
+    # ----------------------------------------------------
+    pydantic~=2.2.0
+
+    Intructions:
+        ==: Pin exact version. Forces replication across development systems.
+        >=: Set minimum version required. Good for broad library functionality.
+        ~=: Compatible release operator. Expects minor bugfix compatibility.
+        ;: Evaluates platform specific conditions before fetching binary
+
+
+4. Install packages 
+    pip install -r requirements.txt
+
+5. Generate package dependencies from your project venv 
+    pip freeze > requirements.txt
