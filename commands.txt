@@ -1,6 +1,8 @@
 -- Install Python (required version)
 -- Install Package Manager
 
+
+
 -- upgrade pip 
     python.exe -m pip install --upgrade pip
 
@@ -9,6 +11,9 @@
     python -m venv [path]
 
     Example: python -m venv .venv
+
+    with python version
+    py -3.12 -m venv .venv
 
 2. Activate / Deactivate VENV
 
