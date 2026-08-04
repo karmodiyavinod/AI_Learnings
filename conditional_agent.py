@@ -12,7 +12,7 @@ def intialMessage(state:AgentState):
     state['message'] = input('Provide your work profile')
     return state
 
-def getMessage(state:AgentState):
+def reasoning(state:AgentState):
     state['ai_message'] = invoke(f'''
         Categorize deparment based on work profile,
          - Work Profile is: {state['message']}
@@ -43,15 +43,15 @@ def unknow_department(state:AgentState):
 
 graph = StateGraph(AgentState);
 graph.add_node(intialMessage)
-graph.add_node(getMessage)
+graph.add_node(reasoning)
 graph.add_node(it_department)
 graph.add_node(billing_department)
 graph.add_node(hr_department)
 graph.add_node(unknow_department)
 
 graph.add_edge(START, 'intialMessage')
-graph.add_edge('intialMessage', 'getMessage')
-graph.add_conditional_edges("getMessage", route, 
+graph.add_edge('intialMessage', 'reasoning')
+graph.add_conditional_edges("reasoning", route, 
                             {
                                 'it_department':'it_department',
                                 'billing_department':'billing_department',
