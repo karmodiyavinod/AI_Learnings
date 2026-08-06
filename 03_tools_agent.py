@@ -43,12 +43,19 @@ graph.add_edge('chat', END);
 app = graph.compile()
 app.get_graph().print_ascii()
 
-userAsk = input("What are you looking for? : ")
+userAsk = input("Ask what ever you are looking for (type exit to close) ? : ")
 
-#system_message = SystemMessage(content="You are a helpful assistant for general user asks.")
-#user_message = HumanMessage(content=userAsk)
-message = {"messages": [("user", userAsk)]}
+while (userAsk.endswith("exit")== False):    
+    #system_message = SystemMessage(content="You are a helpful assistant for general user asks.")
+    #user_message = HumanMessage(content=userAsk)
+    message = {"messages": [("user", userAsk)]}
 
-result = app.invoke(message)
-print('#' * 72 )
-print(result['messages'][-1].content[0]['text'])
+
+    result = app.invoke(message)
+    print('#' * 72 )
+    print(result['messages'][-1].content[0]['text'])
+
+    print('*' * 72 )
+    userAsk = input("Ask what ever you are looking for (type exit to close) ? : ")
+
+print("Agent Exit...")

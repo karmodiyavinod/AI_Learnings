@@ -11,3 +11,8 @@ Display Graph:
   3. 03_tools_agent - Tool Lang Graph Agent
   4. 
   
+
+
+#Gemini Models:
+1. gemini-3.1-flash-lite
+2. gemini-3.6-flash
