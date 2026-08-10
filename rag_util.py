@@ -9,8 +9,8 @@ from env_service import get_gemini_api_key, get_gemini_embedding_model
 import time
 import os
 persist_directory = "./chroma_unstructured_db"
-chunk_size:int = 50
-chunk_overlap:int = 12
+chunk_size:int = 100
+chunk_overlap:int = 20
 embeddings = GoogleGenerativeAIEmbeddings( model=get_gemini_embedding_model(), 
                                            api_key=get_gemini_api_key(),
                                            max_retries=6)
@@ -47,32 +47,44 @@ def get_chunks_from_text(text: str)->list:
     return text_splitter.split_text(text)
     
 def get_retriever(contents: str):
-    
-    vector_store = Chroma(
-        embedding_function=embeddings,  # Fixed argument name
-        collection_name="unstructured_pdf_collection",
-        persist_directory=persist_directory
-    )
 
     if os.path.exists(persist_directory) == False:
         chunks = get_chunks_from_text(' '.join(contents))
-        vector_store.add_texts(chunks)
 
+        vector_store = Chroma(
+                        embedding_function=embeddings,  # Fixed argument name
+                        collection_name="unstructured_pdf_collection",
+                        persist_directory=persist_directory
+                    )
+        for c in chunks:
+            vector_store.add_texts([c])
+            print(f'added: {c}')
+            time.sleep(10)
+
+    else:
+        vector_store = Chroma(
+                embedding_function=embeddings,  # Fixed argument name
+                collection_name="unstructured_pdf_collection",
+                persist_directory=persist_directory
+            )
+        
     retriever = vector_store.as_retriever(
         search_type="similarity",
-        search_kwargs={"k": 5}  # Retrieve the top 2 most relevant chunks
+        search_kwargs={"k": 3}  # Retrieve the top 2 most relevant chunks
     )
 
     return retriever
     
 def test_rag_query(query):
-    #doc_data = get_docs('docs\profile.pdf', Doc_File_Type.PDF) 
-    
-    doc_data = [
-        'Vinod Karmodiya, 19 years of expertise in architecting, engineering, and delivering high-performance enterprise solutions',
-        'Certified in Microsoft AI Fundamentals, the profile seamlessly bridges robust legacy modernization with cutting-edge innovations, specializing in .NET technologies, Angular, TypeScript, Microservices architectures, RESTful APIs, Elasticsearch cache optimization, and automated ASPOSE document engineering',
-        'A pioneer in next-generation intelligence, expertise extends to implementing Generative AI frameworks, Python LangGraph Agentic workflows, Retrieval-Augmented Generation (RAG) architectures, and LangSmith observability across OpenShift container platforms. Recognized for strategic technical governance and end-to-end delivery management, the leader excels at steering cross-functional teams, optimizing system performance, and driving organizational success through scalable, mission-critical solution design'
-    ]
+    row_data = get_docs('docs\profile.pdf', Doc_File_Type.PDF) 
+
+    doc_data = [rd.page_content for rd in row_data if rd != ':']
+
+    # doc_data = [
+    #     'Vinod Karmodiya, 19 years of expertise in architecting, engineering, and delivering high-performance enterprise solutions',
+    #     'Certified in Microsoft AI Fundamentals, the profile seamlessly bridges robust legacy modernization with cutting-edge innovations, specializing in .NET technologies, Angular, TypeScript, Microservices architectures, RESTful APIs, Elasticsearch cache optimization, and automated ASPOSE document engineering',
+    #     'A pioneer in next-generation intelligence, expertise extends to implementing Generative AI frameworks, Python LangGraph Agentic workflows, Retrieval-Augmented Generation (RAG) architectures, and LangSmith observability across OpenShift container platforms. Recognized for strategic technical governance and end-to-end delivery management, the leader excels at steering cross-functional teams, optimizing system performance, and driving organizational success through scalable, mission-critical solution design'
+    # ]
 
     retriever = get_retriever(doc_data)
 
@@ -82,5 +94,5 @@ def test_rag_query(query):
     print(results)
     print('*'*100)
 
-# test_rag_query('who is Vinod Karmodiya')
-test_rag_query('which type of certs he has')
+test_rag_query('who is Vinod Karmodiya')
+# test_rag_query('which type of certs he has')
