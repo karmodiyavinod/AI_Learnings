@@ -5,11 +5,15 @@ from util_llm import get_llm
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph.types import interrupt, Command
 from langgraph.checkpoint.memory import MemorySaver
+from langchain_core.runnables import RunnableConfig
+
 class State(TypedDict):
     messages: Annotated[list, add_messages]
     approved: bool
     draft: str
-    
+
+cnf = {"configurable": {"thread_id": "session-123"}}    
+
 prompt = ChatPromptTemplate.from_messages([
     ("system", 
             '''You are a helpful python code builder assistant powered by Google Gemini.
@@ -19,26 +23,35 @@ prompt = ChatPromptTemplate.from_messages([
 
 chain = prompt | get_llm()
 
-def query(state:State):
+def showState(source:str, config: RunnableConfig):
+    return
+    configurable = config.get('metadata')
+    print(f'Source: {source}, Configuration: {configurable}')
+    
+
+def query(state:State, config: RunnableConfig):
+    showState('query', config)
     query = input('Ask: ')
     if query == 'exit':
         raise ValueError("Existing...")
     
     return {"messages": [("user", query)]}
 
-def code_develop(state:State):
+def code_develop(state:State, config: RunnableConfig):
+    showState('code_develop',config)
     print('code_develop.')
     print(state['messages'])
 
     response = chain.invoke(state['messages'])
     return  {"messages": [response]}
 
-def human_review(state:State):
+def human_review(state:State, config: RunnableConfig):
+    showState('human_review',config)
     code_generated = state['messages'][-1].text
     print('START Code to review'+ '*' * 50)
     print(code_generated)
     print('END review'+ '*' * 50)
-
+    
     decision = interrupt({'draft': 'Instructions: Reply "Approve" to approve or provide review commnent!!'})
 
     print(f'human_review: {decision}')
@@ -49,7 +62,8 @@ def human_review(state:State):
 
     return { 'approved': False, "messages": [HumanMessage(f"Revise it: {decision}")]}
 
-def route_post_review(state: State):
+def route_post_review(state: State, config: RunnableConfig):
+    showState('route_post_review',config)
     print(f'route_post_review: {result['messages'][-1].text}')
 
     return 'end' if state.get('approved') else 'code_develop'    
@@ -68,10 +82,10 @@ graph.add_edge('code_develop','human_review')
 graph.add_conditional_edges('human_review', route_post_review, { 'end': END, 'code_develop': 'code_develop'})
 
 # graph
-cnf = {"configurable": {"thread_id": "session-123"}}
 
 app = graph.compile(checkpointer=MemorySaver())
 app.get_graph().print_ascii()
+
 
 #while(True):
 state = State()
@@ -79,15 +93,23 @@ message = { 'approved': False}
 result = app.invoke(message, config=cnf)
 
 
-pause = result['__interrupt__'][0].value
-print(f'PAUSED: {pause}')
+while(True):
+    pause = result['__interrupt__'][0].value
+    print(f'PAUSED: {pause}')
 
-user_approval = input('approved or comment..')
+    user_approval = input('approved or comment..')
 
-print('Human Review >>')
-final = app.invoke(Command(resume=user_approval), config=cnf)
+    print('Human Review >>')
+    #final = app.invoke(Command(resume=user_approval), config=cnf)
+    final = app.invoke(Command(resume=user_approval, update=state), config=cnf)
 
-print('Final after review: ',('*' * 100))
-print(final['messages'][-1].text)
+    approval_messgae = final['messages'][-1].text;
 
+    if(str(approval_messgae).strip().lower() in ("approve","approved","yes"," go ahead","good")):
+        print('Final after review: ',('*' * 100))
+        print(approval_messgae)
+        break
+    else:
+        print('Revise: ',('*' * 100))
+        Command(update='', goto='human_review') 
 
