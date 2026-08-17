@@ -26,3 +26,12 @@ Display Graph:
     install package: pip install -U langchain-ollama
     ChatOllama(model="llama3.2:3b", temperature=0.5)
 
+
+# Learning Path
+* Basic of Python, AI, ML, Gen AI, Agentic... learning path 
+* Prediction understanding 
+* Prompt Engineering - Refer README_Prompts.md
+
+
+
+
