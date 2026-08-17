@@ -1,0 +1,5 @@
+.venv
+__pycache__
+chroma_unstructured_db
+docs
+local.env
