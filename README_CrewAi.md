@@ -40,7 +40,21 @@
  * CLI
  * YAML Configuation
  * Crew Package
- 
+
+
+ ### Create a crew project using command
+
+ * crewai create crew [project_name] => This creates an entire directory structures
+    * project name
+      * src
+        * project name
+          * config
+            * agents.yaml
+            * tasks.yaml
+          * crew.py
+          * main.py
+
+
   
 
 
