@@ -35,6 +35,15 @@
  * **CrewAI** Open Source
  * **CrewAI Studio UI** 
 
+### Development Mode
+ * Crew Studio
+ * CLI
+ * YAML Configuation
+ * Crew Package
+ 
+  
+
+
  
 
   

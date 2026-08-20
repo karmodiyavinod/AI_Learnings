@@ -1,8 +1,20 @@
-# AI_ML_Projects
-Project created during learnings this tech stack
 
+## Setup
 
-# Each branch as a leaned project created as POC during learning the tech stack
-  1. 
-  2.
-  3.
+### Install UV Tool
+
+uv tool list
+
+uv tool uninstall crewai`
+
+Example: uv tool install crewai==1.14.4
+
+uv tool list
+
+1. Install node uv tool list
+
+2. Run this command:  
+`npx skills add crewaiinc/skills`
+
+CrewAI docs => https://docs.crewai.com/en/introduction
+
