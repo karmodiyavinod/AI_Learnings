@@ -4,3 +4,4 @@ chroma_unstructured_db/
 docs/
 local.env
 projects/.agents/
+projects/researcher/report.md

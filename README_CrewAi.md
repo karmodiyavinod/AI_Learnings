@@ -53,9 +53,11 @@
             * tasks.yaml
           * crew.py
           * main.py
+   Example: crewai create crew researcher --classic
+   load_dotenv(override=True) -- too override default open ai config
 
 
-  
+     
 
 
  
