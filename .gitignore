@@ -3,3 +3,5 @@ chroma_unstructured_db/
 docs/
 __pycache__/
 .venv/
+projects/.agents/
+projects/researcher/
